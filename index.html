@@ -3,133 +3,203 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Admin Panel</title>
+<title>GamEx Admin Panel</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
 
 <style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
 body{
-background:#0f0524;
-font-family:Poppins, sans-serif;
-color:white;
+background:linear-gradient(135deg,#0f051d,#1a0033,#000814);
+color:#fff;
 padding:20px;
 }
-
-h2,h3{text-align:center;}
-
-input,textarea{
+h1{
+text-align:center;
+margin-bottom:25px;
+background:linear-gradient(90deg,#ffcc00,#ff00cc);
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+}
+.admin-box{
+background:#140a26;
+padding:20px;
+border-radius:15px;
+box-shadow:0 0 20px rgba(255,0,255,0.2);
+margin-bottom:30px;
+}
+input,select{
 width:100%;
-padding:10px;
-margin:8px 0;
+padding:12px;
+margin:10px 0;
 border-radius:8px;
 border:none;
+background:#1f0f35;
+color:#fff;
 }
-
 button{
-width:100%;
-padding:10px;
-margin-top:10px;
+padding:12px;
 border:none;
 border-radius:8px;
-background:#8e2de2;
-color:white;
 cursor:pointer;
+font-weight:600;
 }
-
-.card{
-background:#1b083f;
-padding:10px;
-margin-top:15px;
-border-radius:10px;
-}
-
-.card img{
+.add-btn{
 width:100%;
-height:120px;
+background:linear-gradient(90deg,#ff00cc,#ffcc00);
+color:#000;
+margin-top:10px;
+}
+.product-item{
+background:#1b0f30;
+padding:15px;
+margin-bottom:15px;
+border-radius:12px;
+display:flex;
+align-items:center;
+justify-content:space-between;
+}
+.product-item img{
+width:80px;
+height:80px;
 object-fit:cover;
 border-radius:8px;
 }
-
-.delete{
-background:red;
-margin-top:5px;
+.product-info{
+flex:1;
+margin-left:15px;
 }
+.edit-btn{background:#ffc107;}
+.delete-btn{background:#dc3545;color:#fff;}
+.action-btns button{margin-left:5px;}
 </style>
 </head>
-
 <body>
 
-<h2>Admin Panel</h2>
+<h1>GamEx Admin Panel</h1>
 
-<input type="text" id="game" placeholder="Game Name">
+<div class="admin-box">
+
+<input type="text" id="name" placeholder="Product Name">
+<input type="text" id="price" placeholder="Price (₹)">
 <input type="text" id="level" placeholder="Level">
-<input type="number" id="price" placeholder="Price">
 
-<input type="text" id="whatsapp" placeholder="WhatsApp Number (91XXXXXXXXXX)">
-<textarea id="customMessage" placeholder="Custom WhatsApp Message (Optional)"></textarea>
+<select id="game">
+<option value="Free Fire">Free Fire</option>
+<option value="PUBG">PUBG</option>
+<option value="BGMI">BGMI</option>
+</select>
+
+<!-- NEW FIELD -->
+<input type="text" id="whatsappLink" placeholder="Paste Full WhatsApp Link">
 
 <input type="file" id="image">
 
-<button onclick="addProduct()">Add Product</button>
+<button class="add-btn" onclick="addProduct()">Add Product</button>
 
-<h3>All Products</h3>
-<div id="adminList"></div>
+</div>
+
+<div id="productList"></div>
 
 <script>
+
 let products = JSON.parse(localStorage.getItem("products")) || [];
+let editIndex = -1;
 
 function addProduct(){
-let game=document.getElementById("game").value;
-let level=document.getElementById("level").value;
-let price=document.getElementById("price").value;
-let whatsapp=document.getElementById("whatsapp").value;
-let customMessage=document.getElementById("customMessage").value;
-let file=document.getElementById("image").files[0];
 
-if(!game||!level||!price||!whatsapp||!file){
-alert("Fill All Fields");
+let name = document.getElementById("name").value;
+let price = document.getElementById("price").value;
+let level = document.getElementById("level").value;
+let game = document.getElementById("game").value;
+let whatsappLink = document.getElementById("whatsappLink").value;
+let imageInput = document.getElementById("image");
+
+if(!name || !price || !whatsappLink){
+alert("Fill all required fields");
 return;
 }
 
-let reader=new FileReader();
-reader.onload=function(){
-products.push({
-game,
-level,
+let reader = new FileReader();
+reader.onload = function(e){
+
+let product = {
+name,
 price,
-whatsapp,
-customMessage,
-image:reader.result
-});
+level,
+game,
+whatsappLink,
+image:e.target.result
+};
+
+if(editIndex === -1){
+products.push(product);
+}else{
+products[editIndex] = product;
+editIndex = -1;
+}
 
 localStorage.setItem("products",JSON.stringify(products));
-alert("Product Added Successfully");
-displayAdmin();
+displayProducts();
+document.querySelectorAll("input").forEach(input=>input.value="");
 }
-reader.readAsDataURL(file);
+
+if(imageInput.files[0]){
+reader.readAsDataURL(imageInput.files[0]);
+}else{
+alert("Select image");
+}
+
+}
+
+function displayProducts(){
+
+let list = document.getElementById("productList");
+list.innerHTML="";
+
+products.forEach((p,index)=>{
+
+list.innerHTML += `
+<div class="product-item">
+<img src="${p.image}">
+<div class="product-info">
+<h3>${p.name}</h3>
+<p>₹${p.price} | Level ${p.level}</p>
+<p>${p.game}</p>
+<p style="font-size:12px;">Link: ${p.whatsappLink}</p>
+</div>
+<div class="action-btns">
+<button class="edit-btn" onclick="editProduct(${index})">Edit</button>
+<button class="delete-btn" onclick="deleteProduct(${index})">Delete</button>
+</div>
+</div>
+`;
+
+});
+
 }
 
 function deleteProduct(index){
 products.splice(index,1);
 localStorage.setItem("products",JSON.stringify(products));
-displayAdmin();
+displayProducts();
 }
 
-function displayAdmin(){
-let container=document.getElementById("adminList");
-container.innerHTML="";
+function editProduct(index){
 
-products.forEach((p,index)=>{
-container.innerHTML+=`
-<div class="card">
-<img src="${p.image}">
-<b>${p.game}</b> - Lv ${p.level} - ₹${p.price}<br>
-WhatsApp: ${p.whatsapp}
-<button class="delete" onclick="deleteProduct(${index})">Delete</button>
-</div>
-`;
-});
+let p = products[index];
+
+document.getElementById("name").value = p.name;
+document.getElementById("price").value = p.price;
+document.getElementById("level").value = p.level;
+document.getElementById("game").value = p.game;
+document.getElementById("whatsappLink").value = p.whatsappLink;
+
+editIndex = index;
 }
 
-displayAdmin();
+displayProducts();
+
 </script>
 
 </body>
