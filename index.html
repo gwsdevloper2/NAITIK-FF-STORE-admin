@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Panel</title>
+
+<style>
+body{
+    margin:0;
+    font-family:Arial;
+    background:#0f0524;
+    color:white;
+    padding:20px;
+}
+input{
+    padding:10px;
+    margin:8px 0;
+    width:100%;
+    border-radius:8px;
+    border:none;
+}
+button{
+    padding:10px;
+    background:#8e2de2;
+    border:none;
+    color:white;
+    width:100%;
+    border-radius:8px;
+    cursor:pointer;
+}
+.card{
+    background:#1b083f;
+    padding:10px;
+    margin-top:15px;
+    border-radius:10px;
+}
+</style>
+</head>
+
+<body>
+
+<h2>Admin Panel - Add Product</h2>
+
+<input type="text" id="game" placeholder="Game Name (Free Fire)">
+<input type="text" id="level" placeholder="Level">
+<input type="number" id="price" placeholder="Price">
+
+<button onclick="addProduct()">Add Product</button>
+
+<h3>All Products</h3>
+<div id="adminList"></div>
+
+<script>
+let products = JSON.parse(localStorage.getItem("products")) || [];
+
+function addProduct(){
+    let game = document.getElementById("game").value;
+    let level = document.getElementById("level").value;
+    let price = document.getElementById("price").value;
+
+    if(game && level && price){
+        products.push({game,level,price});
+        localStorage.setItem("products",JSON.stringify(products));
+        alert("Product Added");
+        displayAdmin();
+    }
+}
+
+function deleteProduct(index){
+    products.splice(index,1);
+    localStorage.setItem("products",JSON.stringify(products));
+    displayAdmin();
+}
+
+function displayAdmin(){
+    let container = document.getElementById("adminList");
+    container.innerHTML="";
+
+    products.forEach((p,index)=>{
+        container.innerHTML += `
+        <div class="card">
+            ${p.game} - Lv ${p.level} - ₹${p.price}
+            <button onclick="deleteProduct(${index})" style="background:red;margin-top:5px;">Delete</button>
+        </div>
+        `;
+    });
+}
+
+displayAdmin();
+</script>
+
+</body>
+</html>
