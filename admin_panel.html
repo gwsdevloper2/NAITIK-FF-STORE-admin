@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Panel - NAITIK FF STORE</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<style>
+body{font-family:Poppins;background:#000;color:#fff;padding:20px;}
+.container{max-width:1000px;margin:auto;background:#111;padding:25px;border-radius:20px;}
+input,textarea{width:100%;padding:10px;margin:8px 0;border-radius:8px;border:1px solid #32CD32;background:#0d0d0d;color:#fff;box-sizing:border-box;}
+button{padding:10px 20px;border:none;border-radius:20px;background:linear-gradient(90deg,#32CD32,#7CFC00);color:#000;font-weight:600;cursor:pointer;margin-top:10px;}
+.stats{display:flex;gap:20px;flex-wrap:wrap;justify-content:space-between;}
+.stat-box{flex:1;min-width:200px;background:#0d0d0d;padding:15px;border-radius:12px;text-align:center;border:1px solid #32CD32;}
+.product-item{background:#0d0d0d;padding:10px;border-radius:10px;margin-top:10px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;}
+.action-btn{padding:5px 12px;border-radius:12px;border:none;cursor:pointer;font-size:12px;margin-left:5px;}
+.edit-btn{background:#32CD32;color:#000}
+.delete-btn{background:red;color:#fff}
+
+/* Image Section Styles */
+.image-section{margin:8px 0;}
+.image-section label{font-size:13px;color:#32CD32;font-weight:600;display:block;margin-bottom:4px;}
+.image-row{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
+.image-row input{margin:0;flex:1;}
+.remove-img-btn{background:red;color:#fff;border:none;border-radius:50%;width:30px;height:30px;font-size:16px;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-weight:bold;line-height:1;}
+.remove-img-btn:disabled{background:#444;cursor:not-allowed;}
+.add-img-btn{background:linear-gradient(90deg,#1a6b1a,#32CD32);color:#fff;padding:8px 16px;border:none;border-radius:20px;cursor:pointer;font-size:13px;font-weight:600;margin-top:4px;}
+.add-img-btn:disabled{background:#333;color:#777;cursor:not-allowed;}
+.img-count{font-size:12px;color:#aaa;margin-left:8px;}
+.section-divider{border:none;border-top:1px solid #32CD32;margin:20px 0;opacity:0.3;}
+.img-preview-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px;}
+.img-preview-row img{width:40px;height:40px;border-radius:6px;object-fit:cover;border:1px solid #32CD32;}
+.img-preview-row img.broken{display:none;}
+</style>
+</head>
+<body>
+
+<div class="container" id="loginBox">
+  <h2>🔐 Admin Login</h2>
+  <input type="password" id="loginPass" placeholder="Enter Password">
+  <button onclick="login()">Login</button>
+</div>
+
+<div class="container" id="adminPanel" style="display:none">
+  <h2>⚙️ Admin Dashboard</h2>
+
+  <h3>📦 Add / Edit Product</h3>
+  <input type="text" id="uid" placeholder="UID">
+  <input type="text" id="level" placeholder="Level">
+  <input type="number" id="price" placeholder="Price">
+
+  <!-- ===== MULTI IMAGE SECTION ===== -->
+  <div class="image-section">
+    <label>🖼️ Product Images (Max 10) — URL डालें</label>
+    <div id="imageFieldsContainer"></div>
+    <div style="display:flex;align-items:center;gap:10px;margin-top:6px;">
+      <button class="add-img-btn" id="addImgBtn" onclick="addImageField()">+ Image Add करें</button>
+      <span class="img-count" id="imgCountLabel">1 / 10</span>
+    </div>
+  </div>
+  <!-- ============================= -->
+
+  <input type="text" id="whatsappLink" placeholder="WhatsApp Link">
+  <textarea id="description" placeholder="Description"></textarea>
+  <input type="hidden" id="editIndex">
+  <button onclick="saveProduct()">💾 Save Product</button>
+  <button onclick="clearForm()" style="background:linear-gradient(90deg,#555,#888);color:#fff;margin-left:10px;">✖ Clear</button>
+
+  <hr class="section-divider">
+
+  <h3>🔗 Social Links</h3>
+  <input type="text" id="waSocial" placeholder="WhatsApp Link">
+  <input type="text" id="igSocial" placeholder="Instagram Link">
+  <input type="text" id="tgSocial" placeholder="Telegram Link">
+  <button onclick="saveSocialLinks()">Save Social Links</button>
+
+  <h3>📢 WhatsApp Channel Button</h3>
+  <input type="text" id="channelBtn" placeholder="Channel Link">
+  <button onclick="saveChannel()">Save Channel</button>
+
+  <hr class="section-divider">
+
+  <h3>🗂️ All Products</h3>
+  <div id="productList"></div>
+</div>
+
+<script>
+// ===== Firebase Config =====
+const firebaseConfig = {
+  apiKey: "AIzaSyAuA5NuO-DDWTlQtjUChZR52K5co_mYHQI",
+  authDomain: "naitik-ff-store-539c8.firebaseapp.com",
+  projectId: "naitik-ff-store-539c8",
+  storageBucket: "naitik-ff-store-539c8.appspot.com",
+  messagingSenderId: "169337528367",
+  appId: "1:169337528367:web:6988e142a352640535e6da"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+// ===== Admin Login =====
+let adminPass = localStorage.getItem("adminPass") || "admin123";
+function login(){
+  if(document.getElementById('loginPass').value === adminPass){
+    document.getElementById('loginBox').style.display = "none";
+    document.getElementById('adminPanel').style.display = "block";
+    loadProducts();
+    loadSettings();
+    initImageFields();
+  } else {
+    alert("❌ Wrong password");
+  }
+}
+
+// ===== IMAGE FIELDS LOGIC =====
+const MAX_IMAGES = 10;
+
+function initImageFields(existingImages = []) {
+  const container = document.getElementById('imageFieldsContainer');
+  container.innerHTML = "";
+
+  if (existingImages.length > 0) {
+    existingImages.forEach((url, idx) => addImageField(url));
+  } else {
+    addImageField(); // default 1 field
+  }
+}
+
+function addImageField(value = "") {
+  const container = document.getElementById('imageFieldsContainer');
+  const currentCount = container.querySelectorAll('.image-row').length;
+
+  if (currentCount >= MAX_IMAGES) {
+    alert("⚠️ Maximum 10 images add kar sakte hain!");
+    return;
+  }
+
+  const newCount = currentCount + 1;
+  const row = document.createElement('div');
+  row.className = 'image-row';
+  row.innerHTML = `
+    <input type="text" placeholder="Image ${newCount} URL (https://...)" value="${value}" onchange="updateCounter()">
+    <button class="remove-img-btn" onclick="removeImageField(this)" title="Remove Image">✕</button>
+  `;
+  container.appendChild(row);
+  updateCounter();
+}
+
+function removeImageField(btn) {
+  const container = document.getElementById('imageFieldsContainer');
+  const rows = container.querySelectorAll('.image-row');
+  if (rows.length <= 1) {
+    alert("⚠️ Kam se kam 1 image field rehna chahiye!");
+    return;
+  }
+  btn.closest('.image-row').remove();
+  // Re-number placeholders
+  container.querySelectorAll('.image-row').forEach((row, idx) => {
+    row.querySelector('input').placeholder = `Image ${idx + 1} URL (https://...)`;
+  });
+  updateCounter();
+}
+
+function updateCounter() {
+  const container = document.getElementById('imageFieldsContainer');
+  const count = container.querySelectorAll('.image-row').length;
+  document.getElementById('imgCountLabel').textContent = `${count} / ${MAX_IMAGES}`;
+  document.getElementById('addImgBtn').disabled = count >= MAX_IMAGES;
+}
+
+function getImageURLs() {
+  const rows = document.querySelectorAll('#imageFieldsContainer .image-row input');
+  let urls = [];
+  rows.forEach(input => {
+    let val = input.value.trim();
+    if (val !== "") urls.push(val);
+  });
+  return urls;
+}
+
+// ===== Save Product =====
+function saveProduct(){
+  const uid    = document.getElementById('uid').value.trim();
+  const level  = document.getElementById('level').value.trim();
+  const price  = document.getElementById('price').value.trim();
+  const wLink  = document.getElementById('whatsappLink').value.trim();
+  const desc   = document.getElementById('description').value.trim();
+  const edit   = document.getElementById('editIndex').value;
+  const images = getImageURLs();
+
+  if (!uid || !price) { alert("⚠️ UID aur Price zaroori hai!"); return; }
+  if (images.length === 0) { alert("⚠️ Kam se kam 1 Image URL daalna zaroori hai!"); return; }
+
+  // Backward compatible: pehli image ko 'image' field mein bhi save karo
+  let data = {
+    uid, level, price,
+    image: images[0],      // main image (backward compat)
+    images: images,         // all images array
+    whatsappLink: wLink,
+    description: desc
+  };
+
+  if(edit === ""){
+    db.collection("products").add(data).then(() => {
+      alert("✅ Product save ho gaya!");
+      clearForm();
+    }).catch(err => alert("Error: " + err.message));
+  } else {
+    db.collection("products").doc(edit).set(data).then(() => {
+      alert("✅ Product update ho gaya!");
+      clearForm();
+    }).catch(err => alert("Error: " + err.message));
+  }
+}
+
+// ===== Load Products =====
+function loadProducts(){
+  db.collection("products").onSnapshot(snapshot => {
+    const list = document.getElementById('productList');
+    list.innerHTML = "";
+    snapshot.forEach(doc => {
+      let p = doc.data();
+      let imgCount = p.images ? p.images.length : (p.image ? 1 : 0);
+      let previewHtml = "";
+      if (p.images && p.images.length > 0) {
+        previewHtml = `<div class="img-preview-row">` +
+          p.images.map(url => `<img src="${url}" onerror="this.classList.add('broken')" alt="img">`).join("") +
+          `</div>`;
+      } else if (p.image) {
+        previewHtml = `<div class="img-preview-row"><img src="${p.image}" onerror="this.classList.add('broken')" alt="img"></div>`;
+      }
+      list.innerHTML += `
+        <div class="product-item" style="flex-direction:column;align-items:flex-start;gap:6px;">
+          <div style="display:flex;justify-content:space-between;width:100%;align-items:center;">
+            <span>🆔 <b>${p.uid}</b> | ₹${p.price} | Level: ${p.level||'-'} | 🖼️ ${imgCount} image(s)</span>
+            <div>
+              <button class="action-btn edit-btn" onclick="editProduct('${doc.id}')">✏️ Edit</button>
+              <button class="action-btn delete-btn" onclick="deleteProduct('${doc.id}')">🗑️ Delete</button>
+            </div>
+          </div>
+          ${previewHtml}
+        </div>`;
+    });
+  });
+}
+
+// ===== Edit Product =====
+function editProduct(id){
+  db.collection("products").doc(id).get().then(doc => {
+    let p = doc.data();
+    document.getElementById('uid').value          = p.uid || "";
+    document.getElementById('level').value        = p.level || "";
+    document.getElementById('price').value        = p.price || "";
+    document.getElementById('whatsappLink').value = p.whatsappLink || "";
+    document.getElementById('description').value  = p.description || "";
+    document.getElementById('editIndex').value    = id;
+
+    // Load images
+    let imgs = p.images && p.images.length > 0 ? p.images : (p.image ? [p.image] : []);
+    initImageFields(imgs);
+
+    // Scroll to top
+    document.getElementById('adminPanel').scrollIntoView({behavior:'smooth'});
+  });
+}
+
+// ===== Delete Product =====
+function deleteProduct(id){
+  if(confirm("⚠️ Kya aap yeh product delete karna chahte hain?")){
+    db.collection("products").doc(id).delete().then(() => alert("🗑️ Product delete ho gaya!"));
+  }
+}
+
+// ===== Social Links =====
+function saveSocialLinks(){
+  db.collection("settings").doc("social").set({
+    whatsapp: document.getElementById('waSocial').value,
+    instagram: document.getElementById('igSocial').value,
+    telegram: document.getElementById('tgSocial').value
+  }).then(() => alert("✅ Social links save ho gaye!"));
+}
+function saveChannel(){
+  db.collection("settings").doc("channel").set({
+    link: document.getElementById('channelBtn').value
+  }).then(() => alert("✅ Channel link save ho gaya!"));
+}
+function loadSettings(){
+  db.collection("settings").doc("social").get().then(doc => {
+    if(doc.exists){
+      document.getElementById('waSocial').value = doc.data().whatsapp || "";
+      document.getElementById('igSocial').value = doc.data().instagram || "";
+      document.getElementById('tgSocial').value = doc.data().telegram || "";
+    }
+  });
+  db.collection("settings").doc("channel").get().then(doc => {
+    if(doc.exists){ document.getElementById('channelBtn').value = doc.data().link || ""; }
+  });
+}
+
+// ===== Clear Form =====
+function clearForm(){
+  ['uid','level','price','whatsappLink','description','editIndex'].forEach(id => {
+    document.getElementById(id).value = "";
+  });
+  initImageFields(); // reset to 1 blank field
+}
+</script>
+
+</body>
+</html>
