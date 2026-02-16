@@ -100,7 +100,7 @@ firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
 // ===== Admin Login =====
-let adminPass = localStorage.getItem("adminPass") || "admin123";
+let adminPass = localStorage.getItem("adminPass") || "naitikffstore";
 function login(){
   if(document.getElementById('loginPass').value === adminPass){
     document.getElementById('loginBox').style.display = "none";
