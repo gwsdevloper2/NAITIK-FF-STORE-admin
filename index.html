@@ -3,187 +3,261 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NAITIK FF STORE</title>
+<title>Admin Panel - NAITIK FF STORE</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
-*{box-sizing:border-box;}
-body{margin:0;font-family:Poppins,sans-serif;color:#ffffff;background:#000000;scroll-behavior:smooth;position:relative;}
-body::before {content:"";position:fixed;top:0;left:0;width:100%;height:100%;background:url('https://via.placeholder.com/1200x800') no-repeat center center;background-size:cover;opacity:0.05;z-index:-1;}
-header{padding:12px 20px;background:transparent;display:flex;align-items:center;gap:12px;box-shadow:0 0 15px rgba(0,255,0,0.2);}
-header img{width:45px;height:45px;border-radius:50%;border:2px solid #32CD32;object-fit:cover;}
-.store-name{font-weight:700;font-size:20px;background:linear-gradient(90deg,#7CFC00,#32CD32);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
-.hero{padding:60px 15px;text-align:center;}
-.hero h1{font-size:28px;margin:10px 0;color:#ffffff;}
-.hero .highlight-text{font-size:36px;font-weight:700;background:linear-gradient(90deg,#7CFC00,#32CD32);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin:15px 0;}
-.gradient{background:linear-gradient(90deg,#7CFC00,#32CD32);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
-.btn{display:inline-block;padding:12px 22px;margin:8px;border-radius:25px;text-decoration:none;font-weight:600;font-size:14px;transition:0.3s;}
-.btn-whatsapp{background:#25d366;color:#fff;box-shadow:0 0 12px #25d366;}
-.btn-outline{border:2px solid #32CD32;color:#32CD32;}
-.btn:hover{transform:translateY(-3px);}
-.section{padding:30px 15px;max-width:1200px;margin:auto;color:#ffffff;}
-.section h2{font-size:22px;}
-.view-all-btn{margin:15px 0;padding:10px 20px;border-radius:25px;background:linear-gradient(90deg,#32CD32,#7CFC00);border:none;font-weight:600;cursor:pointer;color:#000;}
-.products{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:18px;margin-top:20px;}
-.card{background: rgba(50,205,50,0.05); padding:15px;border-radius:15px;box-shadow:0 0 15px rgba(50,205,50,0.1);transition:0.3s;color:#ffffff;}
-.card:hover{transform:translateY(-5px);box-shadow:0 0 25px rgba(50,205,50,0.3);}
-.card img{width:100%;border-radius:10px;margin-bottom:10px;}
-.row{display:flex;justify-content:space-between;font-size:13px;margin:4px 0;}
-.price{font-weight:700;font-size:16px;color:#ffffff;}
-.view-btn{padding:5px 14px;border-radius:18px;border:1px solid #32CD32;background:none;color:#32CD32;cursor:pointer;font-size:12px;}
-.view-btn:hover{background:#32CD32;color:#000;}
-.service-box-wrapper{max-width:600px;margin:30px auto;background: rgba(50,205,50,0.05); padding:25px;border-radius:20px;box-shadow:0 0 30px rgba(50,205,50,0.2);transition:0.3s;color:#ffffff;}
-.service-box-wrapper:hover{box-shadow:0 0 50px rgba(50,205,50,0.4);transform:translateY(-5px);}
-.service-item{margin:15px 0;text-align:center;}
-.service-item .title{font-weight:700;font-size:18px;background:linear-gradient(90deg,#7CFC00,#32CD32);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:5px;}
-.service-item .desc{font-size:14px;color:#ffffff;}
-.social-service{display:flex;justify-content:center;align-items:center;gap:15px;margin-top:25px;flex-wrap:wrap;}
-.social-service a{display:flex;align-items:center;gap:8px;background: rgba(50,205,50,0.05); padding:10px 15px;border-radius:12px;border-left:4px solid #32CD32;font-size:14px;color:#ffffff;text-decoration:none;}
-.social-service a img{width:20px;height:20px;}
-#browsePage{display:none;padding:30px 15px;max-width:1200px;margin:auto;}
-.highlight{text-align:center;font-size:24px;margin-bottom:8px;}
-.count{text-align:center;color:#ffffff;margin-bottom:15px;font-size:14px;}
-.search-box{text-align:center;margin-bottom:20px;}
-.search-box input{width:100%;max-width:400px;padding:12px;border-radius:20px;border:none;outline:none;color:#000;}
-#singlePage{display:none;padding:30px 15px;}
-.single-container{max-width:600px;margin:auto;background: rgba(50,205,50,0.05); padding:20px;border-radius:15px;color:#ffffff;}
-.single-container img{width:100%;border-radius:12px;margin-bottom:15px;}
-.buy-btn{display:block;text-align:center;padding:14px;border-radius:25px;background:linear-gradient(90deg,#32CD32,#7CFC00);color:#000;font-weight:600;text-decoration:none;margin:20px 0;box-shadow:0 0 20px #32CD32;animation:glow 1.5s infinite alternate;}
-@keyframes glow{from{box-shadow:0 0 8px #32CD32;}to{box-shadow:0 0 30px #7CFC00;}}
-.description{background: rgba(50,205,50,0.05); padding:15px;border-radius:10px;font-size:14px;color:#ffffff;}
-.back-btn{margin-top:15px;padding:8px 18px;border-radius:18px;border:none;background:#32CD32;color:#000;cursor:pointer;}
-footer{text-align:center;padding:20px;background:transparent;margin-top:40px;font-size:13px;color:#ffffff;}
-#adminSection{display:none;padding:20px;max-width:600px;margin:auto;background:#111111;border-radius:15px;}
-#adminSection input,#adminSection textarea{width:100%;margin:5px 0;padding:10px;border-radius:8px;border:none;}
-#adminSection button{padding:10px 15px;margin:5px;border-radius:8px;border:none;background:#32CD32;color:#000;font-weight:600;cursor:pointer;}
-#adminLogin{display:none;padding:20px;max-width:400px;margin:auto;background:#111111;border-radius:15px;}
-#adminLogin input{width:100%;margin:5px 0;padding:10px;border-radius:8px;border:none;}
-#adminLogin button{padding:10px 15px;margin:5px;border-radius:8px;border:none;background:#32CD32;color:#000;font-weight:600;cursor:pointer;}
+body{margin:0;font-family:Poppins;background:#000;color:#fff;padding:20px}
+.container{max-width:1000px;margin:auto;background:#111;padding:25px;border-radius:20px}
+h2{text-align:center;color:#32CD32}
+input,textarea{
+width:100%;
+padding:10px;
+margin:8px 0;
+border-radius:8px;
+border:1px solid #32CD32;
+background:#0d0d0d;
+color:#fff;
+}
+button{
+padding:10px 20px;
+border:none;
+border-radius:20px;
+background:linear-gradient(90deg,#32CD32,#7CFC00);
+color:#000;
+font-weight:600;
+cursor:pointer;
+margin-top:10px;
+}
+button:hover{opacity:.9}
+.logout{background:red;color:#fff}
+.stats{
+display:flex;
+gap:20px;
+justify-content:space-between;
+margin-bottom:20px;
+flex-wrap:wrap;
+}
+.stat-box{
+flex:1;
+min-width:200px;
+background:#0d0d0d;
+padding:15px;
+border-radius:12px;
+text-align:center;
+border:1px solid #32CD32;
+}
+.product-item{
+background:#0d0d0d;
+padding:10px;
+border-radius:10px;
+margin-top:10px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+flex-wrap:wrap;
+}
+.action-btn{
+padding:5px 12px;
+border-radius:12px;
+border:none;
+cursor:pointer;
+font-size:12px;
+margin-left:5px;
+}
+.edit-btn{background:#32CD32;color:#000}
+.delete-btn{background:red;color:#fff}
+.section-title{margin-top:25px;color:#7CFC00}
 </style>
 </head>
 <body>
 
-<header>
-<img id="logoImg" src="https://via.placeholder.com/100">
-<div class="store-name">NAITIK FF STORE</div>
-</header>
-
-<div class="hero">
-<p class="highlight-text">Premium Gaming Accounts</p>
-<h1>Grow & Trade With <span class="gradient">NAITIK FF STORE</span></h1>
-<a href="#" class="btn btn-whatsapp">WHATSAPP CHANNEL</a>
-<a href="#" class="btn btn-outline">FREE FIRE IDS</a>
-</div>
-
-<div class="section" id="homeSection">
-<h2>Available Gaming IDs</h2>
-<button class="view-all-btn" onclick="openBrowse()">View All →</button>
-<div class="products" id="productContainer"></div>
-
-<div class="service-box-wrapper">
-<div class="service-item">
-<div class="title">🔥 Rare ID Collection</div>
-<div class="desc">Exclusive legendary accounts available.</div>
-</div>
-<div class="service-item">
-<div class="title">🔒 Secure Deals</div>
-<div class="desc">100% safe and verified transactions.</div>
-</div>
-<div class="service-item">
-<div class="title">⚡ Instant Transfer</div>
-<div class="desc">Instant account delivery after payment.</div>
-</div>
-</div>
-
-<div class="social-service">
-<a href="https://wa.me/1234567890" target="_blank"><img src="https://cdn-icons-png.flaticon.com/512/733/733585.png"> WhatsApp</a>
-<a href="https://www.instagram.com/yourprofile" target="_blank"><img src="https://cdn-icons-png.flaticon.com/512/733/733558.png"> Instagram</a>
-<a href="https://discord.com/channels/@me" target="_blank"><img src="https://cdn-icons-png.flaticon.com/512/2111/2111370.png"> Discord</a>
-<a href="https://t.me/yourtelegram" target="_blank"><img src="https://cdn-icons-png.flaticon.com/512/2111/2111370.png"> Telegram</a>
-</div>
-</div>
-
-<div id="browsePage">
-<h2 class="highlight gradient">Browse Gaming ID</h2>
-<div class="count" id="productCount"></div>
-<div class="search-box">
-<input type="text" id="searchInput" placeholder="Search by UID, Name or Server..." onkeyup="searchProduct()">
-</div>
-<div class="products" id="browseContainer"></div>
-<button class="back-btn" onclick="goHome()">← Back</button>
-</div>
-
-<div id="singlePage">
-<div class="single-container" id="singleContent"></div>
-</div>
-
-<div id="adminLogin">
+<div class="container" id="loginBox">
 <h2>Admin Login</h2>
-<input type="password" id="adminPass" placeholder="Enter Password">
-<button onclick="adminLogin()">Login</button>
+<input type="password" id="loginPass" placeholder="Enter Password">
+<button onclick="login()">Login</button>
 </div>
 
-<div id="adminSection">
-<h2>Admin Panel</h2>
+<div class="container" id="adminPanel" style="display:none">
+<h2>Admin Dashboard</h2>
+
+<div class="stats">
+<div class="stat-box">
+<div>Total Products</div>
+<h3 id="totalProducts">0</h3>
+</div>
+<div class="stat-box">
+<div>Total Value</div>
+<h3 id="totalValue">₹0</h3>
+</div>
+</div>
+
+<input type="hidden" id="editIndex">
+
+<h3 class="section-title">Add / Edit Product</h3>
 <input type="text" id="uid" placeholder="UID">
-<input type="text" id="name" placeholder="Name">
 <input type="text" id="level" placeholder="Level">
 <input type="number" id="price" placeholder="Price">
 <input type="text" id="image" placeholder="Image URL">
-<input type="text" id="whatsappLink" placeholder="WhatsApp Link">
-<textarea id="description" placeholder="Description"></textarea>
-<button onclick="addProduct()">Add Product</button>
-<button onclick="changePassword()">Change Admin Password</button>
+<input type="text" id="whatsappLink" placeholder="WhatsApp Buy Link">
+<textarea id="description" placeholder="Product Description"></textarea>
+
+<button onclick="saveProduct()">Save Product</button>
+
+<h3 class="section-title">Top WhatsApp Channel Button</h3>
+<input type="text" id="whatsappChannelBtn" placeholder="WhatsApp Channel Button Link">
+<button onclick="saveChannelBtn()">Save Channel Button</button>
+
+<h3 class="section-title">Social Media Links</h3>
+<input type="text" id="whatsappSocial" placeholder="WhatsApp Link">
+<input type="text" id="instagramSocial" placeholder="Instagram Link">
+<input type="text" id="telegramSocial" placeholder="Telegram Link">
+<button onclick="saveSocialLinks()">Save Social Links</button>
+
+<br>
+<button onclick="changePassword()" class="action-btn">Change Password</button>
+<button onclick="logout()" class="logout action-btn">Logout</button>
+
+<div id="productList"></div>
 </div>
 
-<footer>
-© 2026 NAITIK FF STORE. All Rights Reserved.
-</footer>
-
 <script>
+
+let adminPass = localStorage.getItem('adminPass') || "admin123";
 let products = JSON.parse(localStorage.getItem('products')) || [];
-let adminPassword = localStorage.getItem('adminPass') || 'admin123';
 
-function loadHome(){
-let c=document.getElementById('productContainer'); c.innerHTML=''; products.forEach((p,i)=>{c.innerHTML+=cardHTML(p,i);});
+function login(){
+if(loginPass.value === adminPass){
+loginBox.style.display="none";
+adminPanel.style.display="block";
+sessionStorage.setItem("adminLogin","true");
+loadProducts();
+loadSocialLinks();
+}else{
+alert("Wrong Password");
 }
-function cardHTML(p,i){return `<div class="card"><img src="${p.image}"><div class="row"><div><b>UID:</b> ${p.uid}</div><div><b>Level:</b> ${p.level}</div></div><div class="row"><div class="price">₹${p.price}</div><button class="view-btn" onclick="openProduct(${i})">VIEW</button></div></div>`;}
-function openBrowse(){document.getElementById('homeSection').style.display='none'; document.getElementById('browsePage').style.display='block'; document.getElementById('productCount').innerText=products.length+' Products Available'; loadBrowse(products);}
-function loadBrowse(list){let c=document.getElementById('browseContainer'); c.innerHTML=''; list.forEach((p,i)=>{c.innerHTML+=cardHTML(p,i);});}
-function searchProduct(){let v=document.getElementById('searchInput').value.toLowerCase(); let f=products.filter(p=>p.uid.toLowerCase().includes(v)||p.name.toLowerCase().includes(v)||p.server?.toLowerCase().includes(v)); loadBrowse(f);}
-function openProduct(i){let p=products[i]; document.getElementById('homeSection').style.display='none'; document.getElementById('browsePage').style.display='none'; document.getElementById('singlePage').style.display='block'; document.getElementById('singleContent').innerHTML=`<img src="${p.image}"><div class="row"><div><b>UID:</b> ${p.uid}</div><div><b>Level:</b> ${p.level}</div></div><h3>₹${p.price}</h3><a href="${p.whatsappLink}" target="_blank" class="buy-btn">BUY NOW ON WHATSAPP</a><div class="description">${p.description}</div><button class="back-btn" onclick="goHome()">← Back</button>`;}
-function goHome(){document.getElementById('browsePage').style.display='none'; document.getElementById('singlePage').style.display='none'; document.getElementById('homeSection').style.display='block';}
+}
 
-// Admin Functions
-function adminLogin(){
- let pass=document.getElementById('adminPass').value;
- if(pass===adminPassword){
-  document.getElementById('adminLogin').style.display='none';
-  document.getElementById('adminSection').style.display='block';
- } else { alert('Wrong Password!');}
+if(sessionStorage.getItem("adminLogin")==="true"){
+loginBox.style.display="none";
+adminPanel.style.display="block";
+loadProducts();
+loadSocialLinks();
 }
-function addProduct(){
- let p={
- uid:document.getElementById('uid').value,
- name:document.getElementById('name').value,
- level:document.getElementById('level').value,
- price:document.getElementById('price').value,
- image:document.getElementById('image').value,
- whatsappLink:document.getElementById('whatsappLink').value,
- description:document.getElementById('description').value
- };
- products.push(p);
- localStorage.setItem('products',JSON.stringify(products));
- alert('Product added!');
- loadHome();
+
+function logout(){
+sessionStorage.removeItem("adminLogin");
+location.reload();
 }
+
+function saveProduct(){
+let product={
+uid:uid.value,
+level:level.value,
+price:price.value,
+image:image.value,
+whatsappLink:whatsappLink.value,
+description:description.value
+};
+
+if(!product.uid || !product.price){
+alert("UID and Price required");
+return;
+}
+
+let editIndexValue = editIndex.value;
+
+if(editIndexValue===""){
+products.push(product);
+}else{
+products[editIndexValue] = product;
+}
+
+localStorage.setItem("products",JSON.stringify(products));
+clearForm();
+loadProducts();
+}
+
+function loadProducts(){
+productList.innerHTML="<h3 class='section-title'>All Products</h3>";
+let total=0;
+
+products.forEach((p,i)=>{
+total += Number(p.price || 0);
+productList.innerHTML+=`
+<div class="product-item">
+<div>UID: ${p.uid} | ₹${p.price}</div>
+<div>
+<button class="action-btn edit-btn" onclick="editProduct(${i})">Edit</button>
+<button class="action-btn delete-btn" onclick="deleteProduct(${i})">Delete</button>
+</div>
+</div>
+`;
+});
+
+totalProducts.innerText = products.length;
+totalValue.innerText = "₹"+total;
+}
+
+function editProduct(i){
+let p=products[i];
+uid.value=p.uid;
+level.value=p.level;
+price.value=p.price;
+image.value=p.image;
+whatsappLink.value=p.whatsappLink;
+description.value=p.description;
+editIndex.value=i;
+window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function deleteProduct(i){
+products.splice(i,1);
+localStorage.setItem("products",JSON.stringify(products));
+loadProducts();
+}
+
+function clearForm(){
+document.querySelectorAll("#adminPanel input, #adminPanel textarea").forEach(e=>{
+if(e.type!=="hidden") e.value="";
+});
+editIndex.value="";
+}
+
 function changePassword(){
- let newPass=prompt('Enter new admin password');
- if(newPass){adminPassword=newPass; localStorage.setItem('adminPass',newPass); alert('Password changed!');}
+let newPass = prompt("Enter New Password");
+if(newPass){
+localStorage.setItem("adminPass",newPass);
+adminPass=newPass;
+alert("Password Changed Successfully");
+}
 }
 
-loadHome();
-// Show admin login initially
-document.getElementById('adminLogin').style.display='block';
+function saveChannelBtn(){
+localStorage.setItem("whatsappChannelBtn",whatsappChannelBtn.value);
+alert("Channel Button Saved");
+}
+
+function saveSocialLinks(){
+let links={
+whatsapp:whatsappSocial.value,
+instagram:instagramSocial.value,
+telegram:telegramSocial.value
+};
+localStorage.setItem("socialLinks",JSON.stringify(links));
+alert("Social Links Saved");
+}
+
+function loadSocialLinks(){
+let links = JSON.parse(localStorage.getItem("socialLinks")) || {};
+if(links.whatsapp) whatsappSocial.value=links.whatsapp;
+if(links.instagram) instagramSocial.value=links.instagram;
+if(links.telegram) telegramSocial.value=links.telegram;
+
+let channel = localStorage.getItem("whatsappChannelBtn");
+if(channel) whatsappChannelBtn.value=channel;
+}
+
 </script>
+
 </body>
 </html>
